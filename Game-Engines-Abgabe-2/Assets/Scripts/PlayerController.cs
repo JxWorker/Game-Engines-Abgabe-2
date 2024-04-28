@@ -8,9 +8,10 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float health;
     [SerializeField] private GameObject player;
-    [SerializeField] private Camera camera;
+    // [SerializeField] private Camera camera;
 
-    [SerializeField] private float sensitivity;
+    [SerializeField] private float XSensitivity;
+    [SerializeField] private float YSensitivity;
 
     // Start is called before the first frame update
     void Start()
@@ -23,21 +24,26 @@ public class PlayerController : MonoBehaviour
         float xDirection = Input.GetAxis("Horizontal");
         float zDirection = Input.GetAxis("Vertical");
 
-        float xRotation = Input.GetAxis("Mouse X");
-        float yRotation = Input.GetAxis("Mouse Y");
+        float yRotation = Input.GetAxis("Mouse X") * XSensitivity;
+        float xRotation = Input.GetAxis("Mouse Y") * YSensitivity;
 
-        // camera rotates around the player
-        transform.RotateAround(player.transform.position, -Vector3.up, xRotation * sensitivity);
-        transform.RotateAround(Vector3.zero, transform.right, yRotation * sensitivity);
+        Quaternion CharacterTargetRotation = transform.localRotation;
+        CharacterTargetRotation *= Quaternion.Euler(0f, yRotation, 0f);
+        
+        // Quaternion CameraTargetRotation = camera.transform.localRotation;
+        // CameraTargetRotation *= Quaternion.Euler(-xRotation, 0f, 0f);
 
-        // camera.transform.Rotate( xRotation * sensitivity * -camera.transform.up); //instead if you dont want the camera to rotate around the player
-        // camera.transform.Rotate(yRotation * sensitivity * camera.transform.right); //if you don't want the camera to rotate around the player
+        transform.localRotation =
+            Quaternion.Slerp(transform.localRotation, CharacterTargetRotation, 5f * Time.deltaTime);
+        
+        // camera.transform.localRotation =
+            // Quaternion.Slerp(camera.transform.localRotation, CameraTargetRotation, 5f * Time.deltaTime);
+        
         
         if (Input.GetKey(KeyCode.LeftShift))
         {
             transform.position += speed * 2 * Time.deltaTime * new Vector3(xDirection, 0, zDirection);
         }
-
         else
         {
             transform.position += speed * Time.deltaTime * new Vector3(xDirection, 0, zDirection);
