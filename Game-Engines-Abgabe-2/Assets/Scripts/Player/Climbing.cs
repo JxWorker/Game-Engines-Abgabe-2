@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class Climbing : MonoBehaviour
 {
@@ -56,7 +52,10 @@ public class Climbing : MonoBehaviour
         WallCheck();
         StateMachine();
 
-        if (climbing && !exitingWall) ClimbingMovement();
+        if (climbing && !exitingWall)
+        {
+            ClimbingMovement();
+        }
     }
 
     private void StateMachine()
@@ -73,29 +72,54 @@ public class Climbing : MonoBehaviour
         // State 1 - Climbing
         else if (wallFront && Input.GetKey(KeyCode.W) && wallLookAngle < maxWallLookAngle && !exitingWall)
         {
-            if (!climbing && climbTimer > 0) StartClimbing();
+            if (!climbing && climbTimer > 0)
+            {
+                StartClimbing();
+            }
 
             // timer
-            if (climbTimer > 0) climbTimer -= Time.deltaTime;
-            if (climbTimer < 0) StopClimbing();
+            if (climbTimer > 0)
+            {
+                climbTimer -= Time.deltaTime;
+            }
+            if (climbTimer < 0)
+            {
+                StopClimbing();
+            }
         }
 
         // State 2 - Exiting
         else if (exitingWall)
         {
-            if (climbing) StopClimbing();
+            if (climbing)
+            {
+                StopClimbing();
+            }
 
-            if (exitWallTimer > 0) exitWallTimer -= Time.deltaTime;
-            if (exitWallTimer < 0) exitingWall = false;
+            if (exitWallTimer > 0)
+            {
+                exitWallTimer -= Time.deltaTime;
+            }
+            
+            if (exitWallTimer < 0)
+            {
+                exitingWall = false;
+            }
         }
 
         // State 3 - None
         else
         {
-            if (climbing) StopClimbing();
+            if (climbing)
+            {
+                StopClimbing();
+            }
         }
 
-        if (wallFront && Input.GetKeyDown(jumpKey) && climbJumpsLeft > 0) ClimbJump();
+        if (wallFront && Input.GetKeyDown(jumpKey) && climbJumpsLeft > 0)
+        {
+            ClimbJump();
+        }
     }
 
     private void WallCheck()

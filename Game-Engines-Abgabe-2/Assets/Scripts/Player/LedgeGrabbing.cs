@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class LedgeGrabbing : MonoBehaviour
 {
@@ -59,16 +56,28 @@ public class LedgeGrabbing : MonoBehaviour
 
             timeOnLedge += Time.deltaTime;
 
-            if (timeOnLedge > minTimeOnLedge && anyInputKeyPressed) ExitLedgeHold();
+            if (timeOnLedge > minTimeOnLedge && anyInputKeyPressed)
+            {
+                ExitLedgeHold();
+            }
 
-            if (Input.GetKeyDown(jumpKey)) LedgeJump();
+            if (Input.GetKeyDown(jumpKey))
+            {
+                LedgeJump();
+            }
         }
 
         // Substate 2 - Exiting Ledge
         else if (exitingLedge)
         {
-            if (exitLedgeTimer > 0) exitLedgeTimer -= Time.deltaTime;
-            else exitingLedge = false;
+            if (exitLedgeTimer > 0)
+            {
+                exitLedgeTimer -= Time.deltaTime;
+            }
+            else
+            {
+                exitingLedge = false;
+            }
         }
     }
 
@@ -76,13 +85,22 @@ public class LedgeGrabbing : MonoBehaviour
     {
         bool ledgeDetected = Physics.SphereCast(transform.position, ledgeSphereCastRadius, cam.forward, out ledgeHit, ledgeDetectionLength, whatIsLedge);
 
-        if (!ledgeDetected) return;
+        if (!ledgeDetected)
+        {
+            return;
+        }
 
         float distanceToLedge = Vector3.Distance(transform.position, ledgeHit.transform.position);
 
-        if (ledgeHit.transform == lastLedge) return;
+        if (ledgeHit.transform == lastLedge)
+        {
+            return;
+        }
 
-        if (distanceToLedge < maxLedgeGrabDistance && !holding) EnterLedgeHold();
+        if (distanceToLedge < maxLedgeGrabDistance && !holding)
+        {
+            EnterLedgeHold();
+        }
     }
 
     private void LedgeJump()
@@ -124,18 +142,30 @@ public class LedgeGrabbing : MonoBehaviour
         if(distanceToLedge > 1f)
         {
             if(rb.velocity.magnitude < moveToLedgeSpeed)
-                rb.AddForce(directionToLedge.normalized * moveToLedgeSpeed * 1000f * Time.deltaTime);
+            {
+                rb.AddForce(moveToLedgeSpeed * 1000f * Time.deltaTime * directionToLedge.normalized);
+            }
         }
 
         // Hold onto ledge
         else
         {
-            if (!playerMovement.freeze) playerMovement.freeze = true;
-            if (playerMovement.unlimited) playerMovement.unlimited = false;
+            if (!playerMovement.freeze)
+            {
+                playerMovement.freeze = true;
+            }
+            
+            if (playerMovement.unlimited)
+            {
+                playerMovement.unlimited = false;
+            }
         }
 
         // Exiting if something goes wrong
-        if (distanceToLedge > maxLedgeGrabDistance) ExitLedgeHold();
+        if (distanceToLedge > maxLedgeGrabDistance)
+        {
+            ExitLedgeHold();
+        }
     }
 
     private void ExitLedgeHold()
@@ -146,6 +176,7 @@ public class LedgeGrabbing : MonoBehaviour
         holding = false;
         timeOnLedge = 0f;
 
+        playerMovement.unlimited = false;
         playerMovement.restricted = false;
         playerMovement.freeze = false;
 
