@@ -1,11 +1,13 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")] [SerializeField] private float walkSpeed;
     [SerializeField] private float sprintSpeed;
+    [SerializeField] private float climbSpeed;
     [SerializeField] private float dashSpeed;
     [SerializeField] private float dashSpeedChangeFactor;
     [SerializeField] private float groundDrag;
@@ -21,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private float playerHeight;
 
     [SerializeField] private LayerMask isGround;
-    public bool _grounded;
+    public bool grounded;
 
     [Header("Slope Handling")] [SerializeField] private float maxSlopeAngle;
     private RaycastHit _slopeHit;
@@ -35,6 +37,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("Keybinds")] [SerializeField] private KeyCode jumbKey = KeyCode.Space;
     [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift;
 
+    [Header("References")] [SerializeField]
+    private Climbing climbingScript;
+    
     private Rigidbody _rigidbody;
 
     private MovementState _state;
@@ -48,7 +53,10 @@ public class PlayerMovement : MonoBehaviour
     public bool activeGrapple;
     private Vector3 velocityToSet;
     private bool enableMovementOnNextTouch;
-
+    public bool climbing;
+    public bool unlimited;
+    public bool restricted;
+    
     private enum MovementState
     {
         Walking,
@@ -56,7 +64,9 @@ public class PlayerMovement : MonoBehaviour
         Dashing,
         Air,
         Freeze,
-        Grappling
+        Grappling,
+        Climbing,
+        Unlimited
     }
 
     // Start is called before the first frame update
@@ -69,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, isGround);
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, isGround);
 
         MyInput();
         SpeedControl();
@@ -97,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
         _horizontalInput = Input.GetAxisRaw("Horizontal");
         _verticalInput = Input.GetAxisRaw("Vertical");
 
-        if (Input.GetKey(jumbKey) && _readyToJump && _grounded)
+        if (Input.GetKey(jumbKey) && _readyToJump && grounded)
         {
             _readyToJump = false;
 
@@ -109,7 +119,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void StateHandler()
     {
-        if (freeze)
+        if (climbing)
+        {
+            _state = MovementState.Climbing;
+            _desiredMoveSpeed = climbSpeed;
+        }
+        else if (freeze)
         {
             _state = MovementState.Freeze;
             _desiredMoveSpeed = 0;
@@ -120,18 +135,24 @@ public class PlayerMovement : MonoBehaviour
             _state = MovementState.Grappling;
             _desiredMoveSpeed = sprintSpeed;
         }
+        else if (unlimited)
+        {
+            _state = MovementState.Unlimited;
+            _desiredMoveSpeed = 999f;
+            return;
+        }
         else if (dashing)
         {
             _state = MovementState.Dashing;
             _desiredMoveSpeed = dashSpeed;
             _speedChangeFactor = dashSpeedChangeFactor;
         }
-        else if (_grounded && Input.GetKey(sprintKey))
+        else if (grounded && Input.GetKey(sprintKey))
         {
             _state = MovementState.Sprinting;
             _desiredMoveSpeed = sprintSpeed;
         }
-        else if (_grounded)
+        else if (grounded)
         {
             _state = MovementState.Walking;
             _desiredMoveSpeed = walkSpeed;
@@ -177,6 +198,16 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovePlayer()
     {
+        if (restricted)
+        {
+            return;
+        }
+        
+        if (climbingScript.exitingWall)
+        {
+            return;
+        }
+        
         if (activeGrapple)
         {
             return;
@@ -194,11 +225,11 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if (_grounded)
+        if (grounded)
         {
             _rigidbody.AddForce(_moveSpeed * 10f * _moveDirection.normalized, ForceMode.Force);
         }
-        else if (!_grounded)
+        else if (!grounded)
         {
             _rigidbody.AddForce(_moveSpeed * 10f * airMultiplier * _moveDirection.normalized, ForceMode.Force);
         }
