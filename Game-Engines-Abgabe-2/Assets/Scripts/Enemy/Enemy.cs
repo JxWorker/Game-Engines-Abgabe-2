@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,7 +5,6 @@ abstract public class Enemy : MonoBehaviour
 {
     public int healthpoint;
     public int damage;
-    public float movementSpeed;
     public float attackSpeed;
     public float attackCooldown;
     public string typ;
@@ -19,13 +16,13 @@ abstract public class Enemy : MonoBehaviour
     public float maxDetectionDistance;
     public LayerMask playerMask;
     private int _lastHealth;
+    private bool _isDead = false;
 
-    public Enemy(int pHp, int pDmg, float pMS, string pTyp)
+    public Enemy(int pHp, int pDmg, string pTyp)
     {
         healthpoint = pHp;
         _lastHealth = pHp;
         damage = pDmg;
-        movementSpeed = pMS;
         typ = pTyp;
     }
 
@@ -33,23 +30,16 @@ abstract public class Enemy : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         agent = GetComponent<NavMeshAgent>();
-        // _animator = transform.GetComponent<Animator>();
+        
+        healthBar.transform.localScale = new Vector3(healthpoint / 100f, healthBar.transform.localScale.y,
+            healthBar.transform.localScale.z);
     }
 
     void Update()
-    {
-        // if (!DetectedPlayer())
-        // {
-        //     _animator.SetBool("IsWalking", false);
-        //     _animator.SetBool("IsAttacking", false);
-        //     _animator.SetBool("IsTakingDamage", false);
-        //     // _animator.SetBool("HasZeroHealthpoints", false);
-        // }
-
+    { 
         if (_lastHealth != healthpoint)
         {
             AdjustHealthBar();
-            // _animator.SetBool("IsTakingDamage", false);
         }
 
         _lastHealth = healthpoint;
@@ -59,7 +49,7 @@ abstract public class Enemy : MonoBehaviour
             Die();
         }
         
-        if (DetectedPlayer())
+        if (DetectedPlayer() && !_isDead)
         {
             if (attackCooldown > 0)
             {
@@ -71,7 +61,6 @@ abstract public class Enemy : MonoBehaviour
             if (canAttack)
             {
                 Attack();
-                _animator.SetBool("IsAttacking", false);
             }
         }
         else
@@ -80,12 +69,11 @@ abstract public class Enemy : MonoBehaviour
         }
     }
 
-    public void Attack()
+    private void Attack()
     {
         if (attackCooldown <= 0)
         {
-            _animator.SetBool("IsAttacking", true);
-
+            _animator.SetTrigger("Attack");
             player.GetComponent<PlayerCombat>().healthpoints -= damage;
             attackCooldown = attackSpeed;
         }
@@ -95,24 +83,25 @@ abstract public class Enemy : MonoBehaviour
         }
     }
 
-    public void PathFinding()
+    private void PathFinding()
     {
         _animator.SetBool("IsWalking", true);
         agent.SetDestination(player.transform.position);
     }
 
-    public void Die()
+    private void Die()
     {
-        _animator.SetBool("HasZeroHealthpoints", true);
-        Destroy(gameObject, 5f);
+        transform.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        _isDead = true;
+        _animator.SetTrigger("Death");
+        Destroy(gameObject, 2f);
     }
 
-    public void AdjustHealthBar()
+    private void AdjustHealthBar()
     {
+        _animator.SetTrigger("Damage");
         healthBar.transform.localScale = new Vector3(healthpoint / 100f, healthBar.transform.localScale.y,
             healthBar.transform.localScale.z);
-        // _animator.SetBool("IsTakingDamage", true);
-        _animator.SetTrigger("Damage");
     }
 
     private bool DetectedPlayer()
@@ -129,11 +118,17 @@ abstract public class Enemy : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag("Player")) canAttack = true;
+        if (other.gameObject.CompareTag("Player"))
+        {
+            canAttack = true;
+        }
     }
 
     private void OnCollisionExit(Collision other)
     {
-        if (other.gameObject.CompareTag("Player")) canAttack = false;
+        if (other.gameObject.CompareTag("Player"))
+        {
+            canAttack = false;
+        }
     }
 }

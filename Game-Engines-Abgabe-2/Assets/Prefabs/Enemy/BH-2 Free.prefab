@@ -511,7 +511,7 @@ MonoBehaviour:
   agent: {fileID: 662147019115742518}
   healthBar: {fileID: 6479314155704825142}
   _animator: {fileID: 3079350336610986222}
-  maxDetectionDistance: 5
+  maxDetectionDistance: 10
   playerMask:
     serializedVersion: 2
     m_Bits: 64

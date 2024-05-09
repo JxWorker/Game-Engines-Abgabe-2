@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -19,8 +20,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private Transform cam;
     
     private Vector3 _gunPoint;
-
-    // Update is called once per frame
+    
     void Update()
     {
         if (Input.GetKeyDown(attackKey))
@@ -36,7 +36,7 @@ public class PlayerCombat : MonoBehaviour
         
         if (healthpoints <= 0)
         {
-            Respawn();
+            Die();
         }
     }
     
@@ -71,16 +71,8 @@ public class PlayerCombat : MonoBehaviour
         lineRenderer.enabled = false;
     }
     
-    private void Respawn()
+    private void Die()
     {
-        cam.GetComponent<Camera>().enabled = false;
-        // GetComponent<GameObject>().GetComponent<CapsuleCollider>().enabled = false;
-        GetComponent<MeshRenderer>().enabled = false;
-        
-        transform.position = new Vector3(0, 1, 0);
-        
-        cam.GetComponent<Camera>().enabled = true;
-        // GetComponent<CapsuleCollider>().enabled = true;
-        GetComponent<MeshRenderer>().enabled = true;
+        SceneManager.LoadScene("Scenes/MenuScenes/MainMenu");
     }
 }
