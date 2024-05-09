@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7732787099226208178}
   - component: {fileID: 3228550946293005725}
   - component: {fileID: 987623749611322610}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2527,7 +2527,7 @@ GameObject:
   - component: {fileID: 1489653846342067085}
   - component: {fileID: 3521507688086157274}
   - component: {fileID: 5834102364154330024}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4315,7 +4315,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7502375626597552839}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bridge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4354,7 +4354,7 @@ GameObject:
   - component: {fileID: 8262544847662989140}
   - component: {fileID: 5491822148840311064}
   - component: {fileID: 2167003625721948121}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

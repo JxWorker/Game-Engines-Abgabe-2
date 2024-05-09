@@ -69,14 +69,12 @@ public class PlayerMovement : MonoBehaviour
         Unlimited
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _rigidbody.freezeRotation = true;
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, isGround);
@@ -263,6 +261,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    #region Jump
     private void Jump()
     {
         _exitingSlope = true;
@@ -278,7 +277,9 @@ public class PlayerMovement : MonoBehaviour
         
         _exitingSlope = false;
     }
+    #endregion
 
+    #region SlopeMovement
     private bool OnSlope()
     {
         if (Physics.Raycast(transform.position, Vector3.down, out _slopeHit, playerHeight * 0.5f + 0.3f))
@@ -316,7 +317,9 @@ public class PlayerMovement : MonoBehaviour
         _speedChangeFactor = 1f;
         _keepMomentum = false;
     }
+    #endregion
     
+    #region GrapplingHook
     public void JumpToPosition(Vector3 targetPosition, float trajectoryHeight)
     {
         activeGrapple = true;
@@ -361,6 +364,7 @@ public class PlayerMovement : MonoBehaviour
 
         return velocityXZ + velocityY;
     }
+    #endregion
     
     #region Text & Debugging
 
