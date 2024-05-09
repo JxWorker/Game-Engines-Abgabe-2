@@ -122,6 +122,7 @@ GameObject:
   - component: {fileID: 4163828416447987233}
   - component: {fileID: 6414127406457504080}
   - component: {fileID: 8887420651776090755}
+  - component: {fileID: 5986771592962800059}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -316,6 +317,29 @@ MonoBehaviour:
     m_Bits: 512
   exitingLedge: 0
   exitLedgeTime: 0.2
+--- !u!114 &5986771592962800059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2467067193432309285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8660a61865a5e1542b3240aa337893b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthpoints: 100
+  gunDamage: 10
+  maxGunDistance: 30
+  enemy:
+    serializedVersion: 2
+    m_Bits: 1024
+  gunTip: {fileID: 0}
+  lineRenderer: {fileID: 0}
+  cam: {fileID: 0}
+  bomb: {fileID: 1967829311751424658, guid: ee3a3cddf03ba524c831a3d03cb71bc9, type: 3}
+  attackKey: 323
 --- !u!1 &2711512515268477021
 GameObject:
   m_ObjectHideFlags: 0
