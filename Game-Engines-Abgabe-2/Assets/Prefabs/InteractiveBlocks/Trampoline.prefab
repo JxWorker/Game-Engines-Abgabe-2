@@ -367,4 +367,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpHeight: 20
-  player: {fileID: 0}
+  player: {fileID: 2467067193432309285, guid: 1c8ec23476ef7764e9a059365da6cfab, type: 3}

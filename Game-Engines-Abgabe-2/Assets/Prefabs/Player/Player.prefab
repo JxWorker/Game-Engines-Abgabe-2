@@ -335,11 +335,13 @@ MonoBehaviour:
   enemy:
     serializedVersion: 2
     m_Bits: 1024
-  gunTip: {fileID: 0}
   lineRenderer: {fileID: 0}
-  cam: {fileID: 0}
-  bomb: {fileID: 1967829311751424658, guid: ee3a3cddf03ba524c831a3d03cb71bc9, type: 3}
+  bombPrefab: {fileID: 0}
+  throwForce: 0
   attackKey: 323
+  throwBomb: 102
+  gunTip: {fileID: 0}
+  cam: {fileID: 0}
 --- !u!1 &2711512515268477021
 GameObject:
   m_ObjectHideFlags: 0
