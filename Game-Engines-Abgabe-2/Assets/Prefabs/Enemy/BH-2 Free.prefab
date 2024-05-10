@@ -501,8 +501,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthpoint: 100
-  damage: 20
-  movementSpeed: 8
+  damage: 15
   attackSpeed: 2
   attackCooldown: 5
   typ: basic
